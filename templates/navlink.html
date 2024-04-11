@@ -1,0 +1,12 @@
+{{define "NavLink"}}
+{{ $name := .Name }}
+{{ $href := .Href }}
+{{ $currentRoute := Contains .Route .Href }}
+{{ if eq .Name "Home" }}
+{{ $currentRoute = eq .Route .Href }}
+{{end -}}
+
+<a href="{{- $href -}}"
+    class="my-4 py-4 px-6 text-center {{- if $currentRoute }} font-bold underline underline-offset-8 {{- else }} hover:underline hover:underline-offset-8 {{- end }} hover:text-gray-700 w-full">
+    {{$name}}</a>
+{{end}}
