@@ -30,8 +30,8 @@ func main() {
 	log.SetFlags(log.LUTC | log.LstdFlags | log.Lmicroseconds)
 	mux := http.NewServeMux()
 
-	fs := http.FileServer(http.Dir("./static"))
-	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
+	fs := http.FileServer(http.Dir("./public"))
+	mux.Handle("GET /public/", http.StripPrefix("/public/", fs))
 	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text/plain")
 		_, err := w.Write([]byte("Hello world"))
