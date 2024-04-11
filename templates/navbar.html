@@ -1,0 +1,24 @@
+{{define "NavBar" }}
+{{ $route := . }}
+<!-- Define Variable -->
+
+<div class="items-center justify-center ">
+    Logo
+</div>
+<div>
+    <ul class="flex flex-row justify-around items-center">
+        <li>
+            {{template "NavLink" Dict "Name" "Home" "Href" "/" "Route" $route }}
+        </li>
+        <li>
+            {{template "NavLink" Dict "Name" "About" "Href" "/about" "Route" $route }}
+        </li>
+        <li>
+            {{template "NavLink" Dict "Name" "Blog" "Href" "/blog" "Route" $route }}
+        </li>
+        <li>
+            {{template "NavLink" Dict "Name" "Tags" "Href" "/tags" "Route" $route }}
+        </li>
+    </ul>
+</div>
+{{end}}
