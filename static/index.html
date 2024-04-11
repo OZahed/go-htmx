@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-50 w-full h-screen">
+
+<head>
+  <title>Test HTML File </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/static/css/output.css" rel="stylesheet">
+  <script type="module" src="/static/js/index.js"></script>
+  <script src="/static/js/htmx.min.js"></script>
+</head>
+
+<body class="relative">
+  <!-- Make it responsive and craete a hamburger menue for mobile sized -->
+  <div class="md flex-row hidden lg:block  md:block min-h-14 items-center justify-around  sticky top-0 px-6 bg-white"
+    hx-boost="true">
+    <div class="items-center justify-center ">
+      Logo
+    </div>
+    <div>
+      <ul class="flex flex-row justify-around items-center">
+        <li>
+          <a href="/static/index.html"
+            class="my-4 py-4 px-6 text-center font-bold underline underline-offset-8  hover:text-gray-700 w-full">Home</a>
+        </li>
+        <li>
+          <a href="/static/about.html"
+            class="my-4 py-4 px-6 text-center hover:underline hover:underline-offset-8  hover:text-gray-700 w-full">about</a>
+        </li>
+        <li>
+          <a class="my-4 py-4 px-6 text-center hover:underline hover:underline-offset-8  hover:text-gray-700 w-full"
+            href="/static/blog.html">blog</a>
+        </li>
+        <li>
+          <a class="my-4 py-4 px-6 text-center hover:underline hover:underline-offset-8  hover:text-gray-700 w-full"
+            href="/static/tags.html">tags</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="flex justify-center gap-4 w-full">
+    <div id="page-palceholder" class="mt-4">
+      <!-- Content -->
+    </div>
+  </div>
+</body>
+
+</html>
