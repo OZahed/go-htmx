@@ -4,9 +4,11 @@ node_modules/
 bin
 bin/
 
-*.exe
+.*exe
 
 .vscode
 .idea
 
 vendor
+
+.*todo
