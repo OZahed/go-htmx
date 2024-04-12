@@ -1,4 +1,4 @@
-package log
+package logger
 
 import (
 	"fmt"
@@ -24,6 +24,13 @@ const (
 	AnsiCyan       = "\033[36m"
 )
 
+func NewLogger() *slog.Logger {
+	return slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	}))
+}
+
 func ColorizeDuration(d time.Duration) string {
 	var color string
 	switch {
@@ -42,19 +49,23 @@ func ColorizeDuration(d time.Duration) string {
 func ColorizeStatus(status int) string {
 	switch {
 	case status > 199 && status < 300:
-		return AnsiGreenBG + " " + strconv.Itoa(status) + " " + AnsiNoColor
+		return AnsiGreen + " " + strconv.Itoa(status) + " " + AnsiNoColor
 	case status > 299 && status < 400:
-		return AnsiBlueBG + " " + strconv.Itoa(status) + " " + AnsiNoColor
+		return AnsiBlue + " " + strconv.Itoa(status) + " " + AnsiNoColor
 	case status > 399 && status < 500:
-		return AnsiYellowBG + " " + strconv.Itoa(status) + " " + AnsiNoColor
+		return AnsiYellow + " " + strconv.Itoa(status) + " " + AnsiNoColor
 	default:
-		return AnsiRedBG + " " + strconv.Itoa(status) + " " + AnsiNoColor
+		return AnsiRed + " " + strconv.Itoa(status) + " " + AnsiNoColor
 	}
 }
 
-func NewLogger() *slog.Logger {
-	return slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		AddSource: true,
-		Level:     slog.LevelDebug,
-	}))
+func HumanReadableBytes(n int) string {
+	switch {
+	case n < 1024:
+		return fmt.Sprintf("%d B", n)
+	case n >= 1024 && n < 1048576:
+		return fmt.Sprintf("%.2f KB", float64(n)/1024.0)
+	default:
+		return fmt.Sprintf("%.2f GB", float64(n)/1048576.0)
+	}
 }

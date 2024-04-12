@@ -6,18 +6,38 @@ package cmd
 
 import (
 	"fmt"
-
-	"github.com/OZahed/go-htmx/internal/log"
 )
 
-func ExecuteHelp() {
-	fmt.Printf(`
-Subcommands:
-	%shelp%s 	 shows help value
-	%sserve%s 	 serving the server based on ENVs that are local to each pod/image
-	%smigrate%s runs possible database migration files that are specified using DB_MIGRATION_PATH="..." on ENVs`+"\n\r\n\r",
-		log.AnsiGreen, log.AnsiNoColor,
-		log.AnsiGreen, log.AnsiNoColor,
-		log.AnsiGreen, log.AnsiNoColor,
-	)
+var _ Command = (*HelpCmd)(nil)
+
+type HelpCmd struct{}
+
+// Help implements Command.
+func (HelpCmd) Help() HelpInfo {
+	return HelpInfo{
+		SubCmdName: "help",
+		ShortDesc:  "displays help",
+		Usage:      fmt.Sprintf("%s help", APP_NAME),
+	}
+}
+
+// Name implements Command.
+func (HelpCmd) Name() string {
+	return "help"
+}
+
+func (HelpCmd) Execute(_ []string) {
+	fmt.Println(APP_NAME)
+	fmt.Println("cmd applications used for running an HTMX boiler plate application")
+	fmt.Println("")
+	fmt.Println("Sub Commands:")
+	for name, cmd := range commands {
+		help := cmd.Help()
+		fmt.Printf("  %s:\n", name)
+		fmt.Printf("\t%s\n", help.ShortDesc)
+		if help.LongDesc != "" {
+			fmt.Printf("\t%s\n", help.LongDesc)
+		}
+		fmt.Printf("\tUsage:\n\t%s\n", help.Usage)
+	}
 }

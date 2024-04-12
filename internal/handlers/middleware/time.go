@@ -1,21 +1,27 @@
 package middleware
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"time"
 
-	"github.com/OZahed/go-htmx/internal/log"
+	"github.com/OZahed/go-htmx/internal/logger"
 )
 
 type StatusRecorder struct {
 	http.ResponseWriter
-	Status int
+	Status   int
+	ByteSize int
 }
 
 func (s *StatusRecorder) WriteHeader(statuCode int) {
 	s.Status = statuCode
 	s.ResponseWriter.WriteHeader(statuCode)
+}
+
+func (s *StatusRecorder) Write(b []byte) (n int, err error) {
+	s.ByteSize = s.ByteSize + len(b)
+	return s.ResponseWriter.Write(b)
 }
 
 func TimeIt(next http.Handler) http.Handler {
@@ -27,8 +33,11 @@ func TimeIt(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(recorder, r)
-		fmt.Printf("%s |  %s  |  %-10s  |  %s\n", t.Format(time.RFC3339),
-			log.ColorizeStatus(recorder.Status), log.ColorizeDuration(time.Since(t)), r.URL.Path,
+		log.Printf("%s | %-15s | %d B | %s",
+			logger.ColorizeStatus(recorder.Status),
+			logger.ColorizeDuration(time.Since(t)),
+			recorder.ByteSize,
+			r.URL.Path,
 		)
 	})
 }
