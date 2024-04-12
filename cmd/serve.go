@@ -6,14 +6,36 @@ import (
 
 	"github.com/OZahed/go-htmx/internal/handlers"
 	"github.com/OZahed/go-htmx/internal/handlers/middleware"
-	"github.com/OZahed/go-htmx/internal/log"
+	"github.com/OZahed/go-htmx/internal/logger"
 )
 
-func ExucuteServe() {
+var (
+	_ Command = (*ServeCmd)(nil)
+)
+
+type ServeCmd struct{}
+
+// Help implements Command.
+func (ServeCmd) Help() HelpInfo {
+	return HelpInfo{
+		SubCmdName: "serve",
+		ShortDesc:  "runs server for the application",
+		LongDesc:   "",
+	}
+}
+
+// Name implements Command.
+func (ServeCmd) Name() string {
+	return "serve"
+}
+
+func (s ServeCmd) Execute(args []string) {
+	ver := VersionCmd{}
+	ver.Execute(nil)
 	// read configs
 	// make templates
 	tmp := handlers.LoadTemplates("./templates")
-	lg := log.NewLogger().With("name", "main")
+	lg := logger.NewLogger().With("name", "main")
 	// make handlers
 	layoutHandlers := handlers.NewLayoutHanler(tmp, "OZahed", "Layout", lg)
 	// add health check route

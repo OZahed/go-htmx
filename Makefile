@@ -1,11 +1,17 @@
+APP_NAME = htmx-boilerplate
+APP_VERSION := $(shell git describe --abbrev=0 || echo v0.1.0)
+GIT_HEAD := $(shell git rev-parse --verify HEAD)
+BUILD_AT := $(shell date --rfc-3339 'seconds' -u)
+
 build-run: build
-	./bin/server
+	./bin/$(APP_NAME)
 
 run: 
-	go run .
+	go run serve
 
 build: tidy
-	go build -o bin/server . && cp -r public/ bin/ 
+	go build -ldflags="-w -s -X 'github.com/OZahed/go-htmx/cmd.APP_VERSION=$(APP_VERSION)' -X 'github.com/OZahed/go-htmx/cmd.APP_NAME=$(APP_NAME)' -X 'github.com/OZahed/go-htmx/cmd.GIT_HEAD=$(GIT_HEAD)' -X 'github.com/OZahed/go-htmx/cmd.BUILD_AT=$(BUILD_AT)'" \
+		-o bin/$(APP_NAME) . && cp -r public/ bin/ 
 
 tidy: 
 	go mod tidy && go mod download
@@ -36,3 +42,6 @@ install-air:
 
 air: install-air
 	([ -f .air.toml ] && air -c .air.toml) || air init || air
+
+test: 
+	go mod tidy && go test -v --race -p 1 ./internal/... 
