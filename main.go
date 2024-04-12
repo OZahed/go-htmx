@@ -1,27 +1,25 @@
 package main
 
 import (
-	"log"
-	"net/http"
+	"os"
+
+	"github.com/OZahed/go-htmx/cmd"
 )
 
 func main() {
-	log.SetFlags(log.LUTC | log.LstdFlags | log.Lmicroseconds)
-	mux := http.NewServeMux()
-
-	fs := http.FileServer(http.Dir("./public"))
-	mux.Handle("GET /public/", http.StripPrefix("/public/", fs))
-
-	mux.HandleFunc("GET /", indexHandler)
-	mux.HandleFunc("GET /about", aboutHandler)
-	mux.HandleFunc("GET /blog", blogHandler)
-	mux.HandleFunc("GET /tags", tagsHandler)
-
-	server := http.Server{
-		Addr:    ":3000",
-		Handler: TimeIt(PanicHandler(mux)),
+	if len(os.Args) < 2 {
+		cmd.ExecuteHelp()
+		os.Exit(1)
 	}
-
-	log.Println("Server is ready and Litens on port:3000, you can open http://localhost:3000/")
-	log.Fatal(server.ListenAndServe())
+	switch os.Args[1] {
+	case "serve":
+		cmd.ExucuteServe()
+	case "migrate":
+		cmd.ExecuteMigrate()
+	default:
+		cmd.ExecuteHelp()
+		if os.Args[1] != "help" {
+			os.Exit(1)
+		}
+	}
 }
