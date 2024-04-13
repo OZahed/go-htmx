@@ -7,7 +7,7 @@ func init() {
 
 	commands.Register(ServeCmd{})
 	commands.Register(HelpCmd{})
-	commands.Register(MigratCmd{})
+	commands.Register(MigrateCmd{})
 	commands.Register(VersionCmd{})
 }
 
