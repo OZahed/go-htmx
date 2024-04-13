@@ -1,0 +1,7 @@
+<!-- Simple Hello Something with values  -->
+{{define "Hello"}}
+{{if .Name}}
+{{template "Card" Dict "Header" "Greetings" "Name" .Name}}
+{{end}}
+{{template "Card" Dict "Header" "Greetings" "Name" "Stranger"}}
+{{end}}

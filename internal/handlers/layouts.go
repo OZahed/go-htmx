@@ -14,7 +14,7 @@ type LayoutHandlers struct {
 	root     string
 }
 
-func NewLayoutHanler(tmp *template.Template, sn, rootTempName string, lg *slog.Logger) *LayoutHandlers {
+func NewLayoutHandler(tmp *template.Template, sn, rootTempName string, lg *slog.Logger) *LayoutHandlers {
 	return &LayoutHandlers{
 		tmpl:     tmp,
 		lg:       lg,
@@ -41,7 +41,7 @@ func (lh *LayoutHandlers) TagsHandler(w http.ResponseWriter, r *http.Request) {
 
 func (lh *LayoutHandlers) renderTemplate(name, root string, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(contentType, textHtml)
-	err := lh.tmpl.ExecuteTemplate(w, root, LayputInfo{
+	err := lh.tmpl.ExecuteTemplate(w, root, LayoutInfo{
 		DataMap: map[string]any{
 			"message": "this is the template message",
 			"name":    name,

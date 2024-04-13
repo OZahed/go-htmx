@@ -14,9 +14,9 @@ type StatusRecorder struct {
 	ByteSize int
 }
 
-func (s *StatusRecorder) WriteHeader(statuCode int) {
-	s.Status = statuCode
-	s.ResponseWriter.WriteHeader(statuCode)
+func (s *StatusRecorder) WriteHeader(statusCode int) {
+	s.Status = statusCode
+	s.ResponseWriter.WriteHeader(statusCode)
 }
 
 func (s *StatusRecorder) Write(b []byte) (n int, err error) {
@@ -33,10 +33,10 @@ func TimeIt(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(recorder, r)
-		log.Printf("%s | %-15s | %d B | %s",
+		log.Printf("%s | %-15s | %-10s | %s",
 			logger.ColorizeStatus(recorder.Status),
 			logger.ColorizeDuration(time.Since(t)),
-			recorder.ByteSize,
+			logger.HumanReadableBytes(recorder.ByteSize),
 			r.URL.Path,
 		)
 	})
