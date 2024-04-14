@@ -33,10 +33,11 @@ func LogIt(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(recorder, r)
-		log.Printf(" %s | %-15s | %-10s | %s",
+		log.Printf(" %s | %-15s | %-10s | %-10s | %s",
 			logger.ColorizeStatus(recorder.Status),
 			logger.ColorizeDuration(time.Since(t)),
 			logger.HumanReadableBytes(recorder.ByteSize),
+			r.Proto,
 			r.URL.Path,
 		)
 	})
