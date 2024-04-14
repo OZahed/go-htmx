@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"net/http"
@@ -69,8 +70,9 @@ func (s ServeCmd) Execute(args []string) {
 	}
 
 	server := http.Server{
-		Addr:    fmt.Sprintf(":%d", cfg.Port),
-		Handler: middleware.Combine(mux, middlewares...),
+		Addr:      fmt.Sprintf(":%d", cfg.Port),
+		Handler:   middleware.Combine(mux, middlewares...),
+		TLSConfig: &tls.Config{},
 	}
 
 	ctx, cnl := signal.NotifyContext(context.Background(),
@@ -82,8 +84,14 @@ func (s ServeCmd) Execute(args []string) {
 	defer cnl()
 
 	go func() {
-		lg.Debug("Server is ready and Listens on port:3000, you can open http://localhost:3000/")
-		err := server.ListenAndServe()
+		var err error
+		if cfg.CertFile != "" {
+			lg.Debug(fmt.Sprintf("Server is ready -> https://localhost:%d/", cfg.Port))
+			err = server.ListenAndServeTLS(cfg.CertFile, cfg.KeyFile)
+		} else {
+			lg.Debug(fmt.Sprintf("Server is ready -> http://localhost:%d/", cfg.Port))
+			err = server.ListenAndServe()
+		}
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			lg.Error("failed to run server", "error", err)
 			os.Exit(1)

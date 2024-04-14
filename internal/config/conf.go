@@ -21,6 +21,8 @@ type AppConfig struct {
 	StaticRoutesPrefix string
 	Mode               string
 	DebuggerBaseName   string
+	CertFile           string
+	KeyFile            string
 	ShutdownDuration   time.Duration
 	TimeOut            time.Duration
 	Port               int
@@ -47,6 +49,8 @@ func NewAppConfig(Prefix string) *AppConfig {
 	cfg.DebuggerBaseName = getter.GetString("DEBUGGER_NAME", "main")
 	cfg.LayoutRootTmpName = getter.GetString("LAYOUT_TEMP_ROOT_NAME", "Layout")
 	cfg.ShutdownDuration = getter.GetDuration("SHUT_DOWN_DURATION", time.Second*5)
+	cfg.CertFile = getter.GetString("CERT_FILE", "server.crt")
+	cfg.KeyFile = getter.GetString("KEY_FILE", "server.key")
 
 	// make sure this part is assigned
 	cfg.Getter = getter

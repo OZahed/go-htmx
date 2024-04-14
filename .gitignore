@@ -18,4 +18,6 @@ tmp/
 /public/tailwindcss
 
 *tailwindcss
-public/tailwindcss-linux-x64
+
+*.crt
+*.key
