@@ -16,20 +16,14 @@ build: tidy
 tidy: 
 	go mod tidy && go mod download
 
-check-npm:
-	which npm || echo -e "\n>>> \u001b[41m NPM is not installed plaese install nodejs and npm \u001b[0m <<<\n"
-
-init-node: check-npm
-	npm init
-
-install-tailwind: check-npm
-	[ -f tailwind.config.js  ] || npn 
+tailwind:
+	[ ! -f ./tailwindcss ] && echo "\nplease take a look at tailwindcss installation process on officail docs: \n\n\t check standalone CLI process on:\n\t\033[0;33m https://tailwindcss.com/blog/standalone-cli \n\t or put the CLI in ./public directory \n\n\033[0;0m" || echo Tailwind exists
 
 tailwind-watch:
-	npx tailwindcss -i ./public/css/base.css -o ./public/css/styles.css --watch
+	./tailwindcss -i ./public/css/base.css -o ./public/css/styles.css --watch
 
-tailwind:
-	npx tailwindcss -i ./public/css/base.css -o ./public/css/styles.css
+tailwind-minify:
+	./tailwindcss -i ./public/css/base.css -o ./public/css/styles.css --minify
 
 build-docker: which-docker
 	docker build .
