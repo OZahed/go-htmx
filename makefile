@@ -6,8 +6,8 @@ BUILD_AT := $(shell date --rfc-3339 'seconds' -u)
 build-run: build
 	./bin/$(APP_NAME)
 
-run: 
-	go run . serve
+run: build
+	./bin/$(APP_NAME) serve
 
 build: tidy
 	go build -ldflags="-w -s -X 'github.com/OZahed/go-htmx/cmd.APP_VERSION=$(APP_VERSION)' -X 'github.com/OZahed/go-htmx/cmd.APP_NAME=$(APP_NAME)' -X 'github.com/OZahed/go-htmx/cmd.GIT_HEAD=$(GIT_HEAD)' -X 'github.com/OZahed/go-htmx/cmd.BUILD_AT=$(BUILD_AT)'" \
@@ -39,3 +39,6 @@ air: install-air
 
 test: 
 	go mod tidy && go test -v --race -p 1 ./internal/... 
+
+cleanup:
+	rm -rf ./bin
