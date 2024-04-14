@@ -24,7 +24,7 @@ func (s *StatusRecorder) Write(b []byte) (n int, err error) {
 	return s.ResponseWriter.Write(b)
 }
 
-func TimeIt(next http.Handler) http.Handler {
+func LogIt(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t := time.Now()
 		recorder := &StatusRecorder{
@@ -33,11 +33,12 @@ func TimeIt(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(recorder, r)
-		log.Printf("| %s | %-15s | %-10s | %s",
+		log.Printf("| %s | %-15s | %-10s | %20s | %s",
 			logger.ColorizeStatus(recorder.Status),
 			logger.ColorizeDuration(time.Since(t)),
 			logger.HumanReadableBytes(recorder.ByteSize),
 			r.URL.Path,
+			r.Referer()+" Host: "+r.Host+"  ",
 		)
 	})
 }

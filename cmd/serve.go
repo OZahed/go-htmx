@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/OZahed/go-htmx/internal/config"
-	"github.com/OZahed/go-htmx/internal/handlers"
-	"github.com/OZahed/go-htmx/internal/handlers/middleware"
+	"github.com/OZahed/go-htmx/internal/handler"
+	"github.com/OZahed/go-htmx/internal/handler/middleware"
 	"github.com/OZahed/go-htmx/internal/logger"
 	"github.com/OZahed/go-htmx/internal/tmpl"
 )
@@ -48,23 +48,24 @@ func (s ServeCmd) Execute(args []string) {
 
 	lg := logger.NewLogger()
 	// make handlers
-	layoutHandlers := handlers.NewLayoutHandler(layoutTemp, cfg.AppName, cfg.LayoutRootTmpName, lg)
-	partialHandler := handlers.NewPartials(partialTemp, lg.With("name", "partials"))
+	layoutHandler := handler.NewLayout(layoutTemp, cfg.AppName, cfg.LayoutRootTmpName, lg)
+	partialHandler := handler.NewPartials(partialTemp, lg.With("name", "partials"))
 	// add health check route
-	healthHandler := handlers.NewHealthHandler()
+	healthHandler := handler.NewHealthHandler()
 
 	mux := http.NewServeMux()
 
 	fs := http.FileServer(http.Dir(cfg.StaticFilesDir))
 	mux.Handle("GET /public/", http.StripPrefix(cfg.StaticRoutesPrefix, fs))
 
-	handlers.SetHTMLRoutes(mux, layoutHandlers)
-	handlers.SetHandlerRoutes(mux, healthHandler)
-	handlers.SetPartialRoute(mux, partialHandler)
+	handler.SetHTMLRoutes(mux, layoutHandler)
+	handler.SetHandlerRoutes(mux, healthHandler)
+	handler.SetPartialRoute(mux, partialHandler)
 
+	// middlewares apply in reverse order
 	middlewares := []middleware.Middleware{
-		middleware.TimeIt,
 		middleware.PanicHandler,
+		middleware.LogIt,
 	}
 
 	server := http.Server{
