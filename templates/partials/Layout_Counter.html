@@ -1,0 +1,8 @@
+<!-- Simple Hello Something with values  -->
+{{define "Counter"}}
+{{if .Content}}
+{{template "Card" Dict "Header" "Counter" "Content" .Content}}
+{{else}}
+{{template "Card" Dict "Header" "Greetings" "Content" "Stranger"}}
+{{end}}
+{{end}}

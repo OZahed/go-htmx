@@ -14,6 +14,7 @@ import (
 	"github.com/OZahed/go-htmx/internal/handlers"
 	"github.com/OZahed/go-htmx/internal/handlers/middleware"
 	"github.com/OZahed/go-htmx/internal/logger"
+	"github.com/OZahed/go-htmx/internal/tmpl"
 )
 
 var (
@@ -42,7 +43,7 @@ func (s ServeCmd) Execute(args []string) {
 	ver.Execute(nil)
 
 	cfg := config.NewAppConfig(APP_NAME)
-	tmp := handlers.LoadTemplates(cfg.LayoutsRootDir)
+	tmp := tmpl.LoadTemplates(cfg.LayoutsRootDir)
 	lg := logger.NewLogger().With("name", cfg.DebuggerBaseName)
 	// make handlers
 	layoutHandlers := handlers.NewLayoutHandler(tmp, cfg.AppName, cfg.LayoutRootTmpName, lg)

@@ -1,0 +1,14 @@
+{{define "Card"}}
+<div
+    class="gtid grid-rows-1 gap-4 shadow-md max-w-4xl mb-8 w-full rounded-lg bg-white p-4 mx-4 {{ if not .ShadowDisabled -}} hover:shadow-md {{- end}}">
+    <div class="text-4xl justify-center items-center">
+        <h1>{{.Header}}</h1>
+    </div>
+    <div class="justify-center items-start">
+        <p>{{.Content}}</p>
+    </div>
+
+</div>
+
+{{end}}
+hover:shadow-md
