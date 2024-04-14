@@ -13,8 +13,8 @@ import (
 	"github.com/OZahed/go-htmx/internal/config"
 	"github.com/OZahed/go-htmx/internal/handler"
 	"github.com/OZahed/go-htmx/internal/handler/middleware"
+	"github.com/OZahed/go-htmx/internal/handler/tmpl"
 	"github.com/OZahed/go-htmx/internal/logger"
-	"github.com/OZahed/go-htmx/internal/tmpl"
 )
 
 var (

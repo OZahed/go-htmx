@@ -4,6 +4,8 @@ your configs consider replacing MakeConfigsFromEnv implementation with `viper` i
 with Viper object,
 
 Since Golang type system won't allow
+
+If you do not need config default values, consider using `GET[T any](name string) T` function
 */
 package config
 
@@ -38,19 +40,19 @@ func NewAppConfig(Prefix string) *AppConfig {
 	}
 
 	cfg := new(AppConfig)
-	cfg.Port = getter.GetInt("PORT", 8080)
-	cfg.Mode = getter.GetString("MODE", "DEV")
-	cfg.AppName = getter.GetString("NAME", Prefix)
-	cfg.TimeOut = getter.GetDuration("TIMEOUT", time.Second*15)
-	cfg.StaticFilesDir = getter.GetString("STATIC_FILES_DIR", "./public")
-	cfg.StaticRoutesPrefix = getter.GetString("STATIC_ROUTES_PREFIX", "/public/")
-	cfg.LayoutsRootDir = getter.GetString("LAYOUT_TEMP_DIR", "./templates")
-	cfg.PartialRootDirs = getter.GetString("PARTIAL_TEMP_DIR", "./templates/partials")
-	cfg.DebuggerBaseName = getter.GetString("DEBUGGER_NAME", "main")
-	cfg.LayoutRootTmpName = getter.GetString("LAYOUT_TEMP_ROOT_NAME", "Layout")
-	cfg.ShutdownDuration = getter.GetDuration("SHUT_DOWN_DURATION", time.Second*5)
-	cfg.CertFile = getter.GetString("CERT_FILE", "server.crt")
-	cfg.KeyFile = getter.GetString("KEY_FILE", "server.key")
+	cfg.Port = GetDefault(keyProvider("PORT"), 8080)
+	cfg.Mode = GetDefault(keyProvider("MODE"), "DEV")
+	cfg.AppName = GetDefault(keyProvider("NAME"), Prefix)
+	cfg.TimeOut = GetDefault(keyProvider("TIMEOUT"), time.Second*15)
+	cfg.CertFile = GetDefault(keyProvider("CERT_FILE"), "server.crt")
+	cfg.KeyFile = GetDefault(keyProvider("KEY_FILE"), "server.key")
+	cfg.LayoutsRootDir = GetDefault(keyProvider("LAYOUT_TEMP_DIR"), "./templates")
+	cfg.StaticFilesDir = GetDefault(keyProvider("STATIC_FILES_DIR"), "./public")
+	cfg.PartialRootDirs = GetDefault(keyProvider("PARTIAL_TEMP_DIR"), "./templates/partials")
+	cfg.DebuggerBaseName = GetDefault(keyProvider("DEBUGGER_NAME"), "main")
+	cfg.ShutdownDuration = GetDefault(keyProvider("SHUT_DOWN_DURATION"), time.Second*5)
+	cfg.LayoutRootTmpName = GetDefault(keyProvider("LAYOUT_TEMP_ROOT_NAME"), "Layout")
+	cfg.StaticRoutesPrefix = GetDefault(keyProvider("STATIC_ROUTES_PREFIX"), "/public/")
 
 	// make sure this part is assigned
 	cfg.Getter = getter

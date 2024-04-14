@@ -1,19 +1,17 @@
 {{define "Comp_Card"}}
-<div
-    class="gtid grid-rows-1 gap-4 shadow-md max-w-4xl mb-8 w-full rounded-lg bg-white p-4 mx-4 {{ if not .ShadowDisabled -}} hover:shadow-md {{- end}}">
-    <div class="text-4xl justify-center items-center">
-        <h1>{{.Header}}</h1>
-    </div>
-    <div class="justify-center items-start">
-        <p> Count Number is: {{.Count}}</p>
-    </div>
 
-    <div class="flex flex-row items-center justify-center">
-        <button class="my-4 py-6 px-4 bg-gray-100 rounded-lg hover:bg-gray-200 hover:underline hover:underline-offset-8"
-            hx-get="/counter/{{.Count}}" hx-target="#counter-placeholder" hx-swap="innerHTML"
-            hx-trigger="click">Increase
-        </button>
-    </div>
+<div class="text-4xl flex flex-col gap-2 justify-center items-center">
+    <h1 class=" my-1 py-1 px-4 text-center">{{.Header}}</h1>
+    <hr class="w-1/2">
+</div>
+<div class="justify-center items-start px-8 py-4 mx-auto flex">
+    <p class="text-slate-600 text-lg"> Count Number is: <span class="font-bold text-sky-600">{{.Count}}</span> </p>
+</div>
+
+<div class="flex flex-row items-center justify-center px-4">
+    <button class="my-4 py-6 px-4 bg-gray-100 rounded-lg hover:bg-gray-200 hover:underline hover:underline-offset-8"
+        hx-get="/counter/{{.Count}}" hx-target="#counter-placeholder" hx-swap="innerHTML" hx-trigger="click">Increase
+    </button>
 </div>
 
 {{end}}
