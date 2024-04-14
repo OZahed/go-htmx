@@ -1,8 +1,8 @@
-package handlers
+package handler
 
 import "net/http"
 
-func SetHTMLRoutes(router *http.ServeMux, handler *LayoutHandlers) {
+func SetHTMLRoutes(router *http.ServeMux, handler *Layout) {
 	router.HandleFunc("GET /", handler.IndexHandler)
 	router.HandleFunc("GET /about", handler.AboutHandler)
 	router.HandleFunc("GET /blog", handler.BlogHandler)
