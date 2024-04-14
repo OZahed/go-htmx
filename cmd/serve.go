@@ -43,10 +43,13 @@ func (s ServeCmd) Execute(args []string) {
 	ver.Execute(nil)
 
 	cfg := config.NewAppConfig(APP_NAME)
-	tmp := tmpl.LoadTemplates(cfg.LayoutsRootDir)
-	lg := logger.NewLogger().With("name", cfg.DebuggerBaseName)
+	layoutTemp := tmpl.LoadTemplates(cfg.LayoutsRootDir)
+	partialTemp := tmpl.LoadTemplates(cfg.PartialRootDirs)
+
+	lg := logger.NewLogger()
 	// make handlers
-	layoutHandlers := handlers.NewLayoutHandler(tmp, cfg.AppName, cfg.LayoutRootTmpName, lg)
+	layoutHandlers := handlers.NewLayoutHandler(layoutTemp, cfg.AppName, cfg.LayoutRootTmpName, lg)
+	partialHandler := handlers.NewPartials(partialTemp, lg.With("name", "partials"))
 	// add health check route
 	healthHandler := handlers.NewHealthHandler()
 
@@ -57,10 +60,16 @@ func (s ServeCmd) Execute(args []string) {
 
 	handlers.SetHTMLRoutes(mux, layoutHandlers)
 	handlers.SetHandlerRoutes(mux, healthHandler)
+	handlers.SetPartialRoute(mux, partialHandler)
+
+	middlewares := []middleware.Middleware{
+		middleware.TimeIt,
+		middleware.PanicHandler,
+	}
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Port),
-		Handler: middleware.TimeIt(middleware.PanicHandler(mux)),
+		Handler: middleware.Combine(mux, middlewares...),
 	}
 
 	ctx, cnl := signal.NotifyContext(context.Background(),

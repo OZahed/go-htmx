@@ -24,34 +24,46 @@ func NewLayoutHandler(tmp *template.Template, sn, rootTempName string, lg *slog.
 }
 
 func (lh *LayoutHandlers) BlogHandler(w http.ResponseWriter, r *http.Request) {
-	lh.renderTemplate(fmt.Sprintf("%s > Blog", lh.siteName), lh.root, w, r)
+	data := LayoutInfo{
+		SubTmplName: "Blog",
+		PageName:    fmt.Sprintf("%s > Blog", lh.siteName),
+		Route:       r.URL.Path,
+	}
+	lh.renderTemplate(data, w, r)
 }
 
 func (lh *LayoutHandlers) IndexHandler(w http.ResponseWriter, r *http.Request) {
-	lh.renderTemplate(lh.siteName, lh.root, w, r)
+	data := LayoutInfo{
+		SubTmplName: "",
+		PageName:    lh.siteName,
+		Route:       r.URL.Path,
+	}
+	lh.renderTemplate(data, w, r)
 }
 
 func (lh *LayoutHandlers) AboutHandler(w http.ResponseWriter, r *http.Request) {
-	lh.renderTemplate(fmt.Sprintf("%s > about", lh.siteName), lh.root, w, r)
+	data := LayoutInfo{
+		SubTmplName: "About",
+		PageName:    fmt.Sprintf("%s > About", lh.siteName),
+		Route:       r.URL.Path,
+	}
+	lh.renderTemplate(data, w, r)
 }
 
 func (lh *LayoutHandlers) TagsHandler(w http.ResponseWriter, r *http.Request) {
-	lh.renderTemplate(fmt.Sprintf("%s > Tags", lh.siteName), lh.root, w, r)
+	data := LayoutInfo{
+		SubTmplName: "Tags",
+		PageName:    fmt.Sprintf("%s > Tags", lh.siteName),
+		Route:       r.URL.Path,
+	}
+	lh.renderTemplate(data, w, r)
 }
 
-func (lh *LayoutHandlers) renderTemplate(name, root string, w http.ResponseWriter, r *http.Request) {
+func (lh *LayoutHandlers) renderTemplate(data LayoutInfo, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(contentType, textHtml)
-	err := lh.tmpl.ExecuteTemplate(w, root, LayoutInfo{
-		DataMap: map[string]any{
-			"message": "this is the template message",
-			"name":    name,
-		},
-		PageName: name,
-		Route:    r.URL.Path,
-	})
-
+	err := lh.tmpl.ExecuteTemplate(w, lh.root, data)
 	if err != nil {
-		lh.lg.Error("failed to execute template", "name", name, "path", r.URL.Path, "error", err)
+		lh.lg.Error("failed to execute template", "path", r.URL.Path, "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
