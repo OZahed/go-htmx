@@ -1,8 +1,8 @@
 <!-- Simple Hello Something with values  -->
-{{define "Counter"}}
+{{define "Layout_Counter"}}
 {{if .Content}}
-{{template "Card" Dict "Header" "Counter" "Content" .Content}}
+{{template "Comp_Card" Attach .Content "Header" "Counter"}}
 {{else}}
-{{template "Card" Dict "Header" "Greetings" "Content" "Stranger"}}
+{{template "Comp_Card" Dict "Header" "Default" "Count" "10"}}
 {{end}}
 {{end}}

@@ -1,4 +1,6 @@
 {{define "Layout" }}
+{{$tmplName := .SubTmplName}}
+
 <!DOCTYPE html>
 <html lang="en" class="bg-gray-50 w-full h-screen">
 
@@ -12,17 +14,36 @@
         {{ template "NavBar" .Route}}
     </div>
 
-    <div class="flex flex-col items-center my-4 gap-4 w-full">
-        <p class="text-lg text-center ">
-            {{ .DataMap.message }}
-        </p>
-        <p class="text-lg text-center ">
-            {{ .DataMap.name }}
-        </p>
-
+    {{if not $tmplName}}
+    <div class="flex flex-col items-center my-4 gap-4 w-full" id="counter-placeholder">
+        <div
+            class="gtid grid-rows-1 gap-4 shadow-md max-w-4xl mb-8 w-full rounded-lg bg-white p-4 mx-4 hover:shadow-md">
+            <div class="text-4xl justify-center items-center">
+                <h1>Counter in Main HTML (Init state)</h1>
+            </div>
+            <div class="justify-center items-start">
+                <p> Count Number is: 0 (Init State) defined on Main HTML</p>
+            </div>
+            <div class="flex flex-row">
+                <div class="flex flex-row items-center justify-center">
+                    <button
+                        class="my-4 py-6 px-4 bg-gray-100 rounded-lg hover:bg-gray-200 hover:underline hover:underline-offset-8"
+                        hx-get="/counter/0" hx-target="#counter-placeholder" hx-swap="innerHTML" hx-trigger="click">Go
+                        to
+                        Counter
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+    {{else}}
+    <div class="flex flex-col items-center my-4 gap-4 w-full" id="counter-placeholder">
+        {{if eq $tmplName "Blog"}} {{template "Blog"}} {{end}}
+        {{if eq $tmplName "About"}} {{template "About"}} {{end}}
+        {{if eq $tmplName "Tags"}} {{template "Tags"}} {{end}}
+    </div>
+    {{end}}
 </body>
 
 </html>
-
 {{end}}

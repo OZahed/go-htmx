@@ -12,3 +12,7 @@ func SetHTMLRoutes(router *http.ServeMux, handler *LayoutHandlers) {
 func SetHandlerRoutes(router *http.ServeMux, handler *HealthHandler) {
 	router.HandleFunc("GET /health", handler.Health)
 }
+
+func SetPartialRoute(router *http.ServeMux, handler *Partials) {
+	router.HandleFunc("GET /counter/{count}", handler.Counter)
+}
