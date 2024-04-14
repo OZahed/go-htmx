@@ -40,5 +40,8 @@ air: install-air
 test: 
 	go mod tidy && go test -v --race -p 1 ./internal/... 
 
+tls-keys: 
+	which openssl && openssl req -newkey rsa:2048 -nodes -keyout server.key -x509 -days 365 -out server.crt
+
 cleanup:
 	rm -rf ./bin
