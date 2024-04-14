@@ -1,4 +1,4 @@
-name: db-pipelinet
+name: build
 on:
   push:
     branches:
@@ -26,7 +26,7 @@ jobs:
       - name: golangci-lint version
         run: golangci-lint version
       - name: golangci-lint
-        run: golangci-lint run -v -c ./...
+        run: golangci-lint run -v -c .golangci.yml ./...
   build:
     runs-on: ubuntu-latest
     steps:
@@ -36,6 +36,6 @@ jobs:
         with:
           go-version: "1.22"
       - name: Install dependencies
-        run: go work sync
+        run: go mod tidy
       - name: run tests
         run: go test ./... -v -p 1 -race
