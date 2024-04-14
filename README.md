@@ -11,7 +11,7 @@ WIP:
 
 - [ ] Add Support for `.templ` files
 - [ ] Add command line way to auto generate all the files without git clone
-- [ ] Add http/2
+- [x] Add http/2
 - [ ] Add websocket
 - [ ] Add authentication handler
 - [ ] Add database
