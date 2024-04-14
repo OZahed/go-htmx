@@ -34,25 +34,25 @@ type AppConfig struct {
 // usually it is best practice to keep your application environment variables like this: APPNAME_ENV_NAME
 // prefix is used to take care of APPNAME_ part
 func NewAppConfig(Prefix string) *AppConfig {
-	keyProvider := makeKeyProviderPrefix(Prefix)
+	key := makeKeyProviderPrefix(Prefix)
 	getter := &Getter{
-		keyProvider: keyProvider,
+		key: key,
 	}
 
 	cfg := new(AppConfig)
-	cfg.Port = GetDefault(keyProvider("PORT"), 8080)
-	cfg.Mode = GetDefault(keyProvider("MODE"), "DEV")
-	cfg.AppName = GetDefault(keyProvider("NAME"), Prefix)
-	cfg.TimeOut = GetDefault(keyProvider("TIMEOUT"), time.Second*15)
-	cfg.CertFile = GetDefault(keyProvider("CERT_FILE"), "server.crt")
-	cfg.KeyFile = GetDefault(keyProvider("KEY_FILE"), "server.key")
-	cfg.LayoutsRootDir = GetDefault(keyProvider("LAYOUT_TEMP_DIR"), "./templates")
-	cfg.StaticFilesDir = GetDefault(keyProvider("STATIC_FILES_DIR"), "./public")
-	cfg.PartialRootDirs = GetDefault(keyProvider("PARTIAL_TEMP_DIR"), "./templates/partials")
-	cfg.DebuggerBaseName = GetDefault(keyProvider("DEBUGGER_NAME"), "main")
-	cfg.ShutdownDuration = GetDefault(keyProvider("SHUT_DOWN_DURATION"), time.Second*5)
-	cfg.LayoutRootTmpName = GetDefault(keyProvider("LAYOUT_TEMP_ROOT_NAME"), "Layout")
-	cfg.StaticRoutesPrefix = GetDefault(keyProvider("STATIC_ROUTES_PREFIX"), "/public/")
+	cfg.Port = GetDefault(key("PORT"), 8080)
+	cfg.Mode = GetDefault(key("MODE"), "DEV")
+	cfg.AppName = GetDefault(key("NAME"), Prefix)
+	cfg.TimeOut = GetDefault(key("TIMEOUT"), time.Second*15)
+	cfg.CertFile = GetDefault(key("CERT_FILE"), "server.crt")
+	cfg.KeyFile = GetDefault(key("KEY_FILE"), "server.key")
+	cfg.LayoutsRootDir = GetDefault(key("LAYOUT_TEMP_DIR"), "./templates")
+	cfg.StaticFilesDir = GetDefault(key("STATIC_FILES_DIR"), "./public")
+	cfg.PartialRootDirs = GetDefault(key("PARTIAL_TEMP_DIR"), "./templates/partials")
+	cfg.DebuggerBaseName = GetDefault(key("DEBUGGER_NAME"), "main")
+	cfg.ShutdownDuration = GetDefault(key("SHUT_DOWN_DURATION"), time.Second*5)
+	cfg.LayoutRootTmpName = GetDefault(key("LAYOUT_TEMP_ROOT_NAME"), "Layout")
+	cfg.StaticRoutesPrefix = GetDefault(key("STATIC_ROUTES_PREFIX"), "/public/")
 
 	// make sure this part is assigned
 	cfg.Getter = getter

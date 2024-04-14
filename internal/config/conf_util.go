@@ -24,142 +24,49 @@ var (
 	}
 )
 
+// Methods can not be generic so I have to wrap everything
 type Getter struct {
-	keyProvider func(name string) string
+	key func(name string) string
 }
 
 func (a *Getter) GetString(name, def string) string {
-	return parseEnv(a.keyProvider(name), def).(string)
+	return GetDefault(a.key(name), def)
 }
 
 func (a *Getter) GetStringSlice(name string) []string {
-	return parseEnv(name, []string{}).([]string)
+	return GetDefault(a.key(name), []string{})
 }
 
 func (a *Getter) GetInt(name string, def int) int {
-	return parseEnv(a.keyProvider(name), def).(int)
+	return GetDefault(a.key(name), def)
 }
 
 func (a *Getter) GetInt64(name string, def int64) int64 {
-	return parseEnv(a.keyProvider(name), def).(int64)
+	return GetDefault(a.key(name), def)
 }
 
 func (a *Getter) GetInt32(name string, def int32) int32 {
-	return parseEnv(a.keyProvider(name), def).(int32)
+	return GetDefault(a.key(name), def)
 }
 
 func (a *Getter) GetFloat64(name string, def float64) float64 {
-	return parseEnv(a.keyProvider(name), def).(float64)
+	return GetDefault(a.key(name), def)
 }
 
 func (a *Getter) GetFloat32(name string, def float32) float32 {
-	return parseEnv(a.keyProvider(name), def).(float32)
+	return GetDefault(a.key(name), def)
 }
 
 func (a *Getter) GetBool(name string) bool {
-	return parseEnv(a.keyProvider(name), false).(bool)
+	return GetDefault(a.key(name), false)
 }
 
 func (a *Getter) GetTime(name string) time.Time {
-	return parseEnv(a.keyProvider(name), time.Time{}).(time.Time)
+	return GetDefault(a.key(name), time.Time{})
 }
 
 func (a *Getter) GetDuration(name string, def time.Duration) time.Duration {
-	return parseEnv(a.keyProvider(name), def).(time.Duration)
-}
-
-func (a *Getter) GetUrl(name string) *url.URL {
-	return parseEnv(a.keyProvider(name), (*url.URL)(nil)).(*url.URL)
-}
-
-// Name Without prefix
-func parseEnv(name string, def any) any {
-	val := os.Getenv(name)
-	if val == "" {
-		return def
-	}
-
-	switch def.(type) {
-	case string:
-		if val == "" {
-			return def
-		}
-		return val
-	case []string:
-		if len(val) == 0 {
-			return def
-		}
-		for _, sep := range separators {
-			split := strings.Split(val, sep)
-			if split[0] != val {
-				return split
-			}
-		}
-		return []string{val}
-	case int:
-		n := int(parseInt64(val))
-		if n == 0 {
-			return def
-		}
-		return n
-	case int32:
-		n := parseInt64(val)
-		if n == 0 {
-			return def
-		}
-		return int32(n)
-
-	case int64:
-		n := parseInt64(val)
-		if n == 0 {
-			return def
-		}
-		return n
-	case float64:
-		res, _ := strconv.ParseFloat(val, 64)
-		if res == 0 {
-			return def
-		}
-
-		return res
-	case float32:
-		res, _ := strconv.ParseFloat(val, 32)
-		if res == 0 {
-			return def
-		}
-		return res
-	case bool:
-		res, err := strconv.ParseBool(val)
-		if err != nil {
-			return def
-		}
-
-		return res
-
-	case time.Time:
-		for _, layout := range timeLayouts {
-			t, err := time.Parse(layout, val)
-			if err == nil && !t.IsZero() {
-				return t
-			}
-		}
-		return def
-	case time.Duration:
-		d, err := time.ParseDuration(val)
-		if err != nil || d == 0 {
-			return def
-		}
-		return d
-
-	case *url.URL:
-		u, err := url.Parse(val)
-		if err != nil {
-			return def
-		}
-		return u
-	default:
-		return def
-	}
+	return GetDefault(a.key(name), def)
 }
 
 func GetDefault[T any](name string, def T) T {
@@ -254,5 +161,95 @@ func makeKeyProviderPrefix(prefix string) func(name string) string {
 		}
 
 		return prefix + "_" + name
+	}
+}
+
+// Name Without prefix
+func parseEnv(name string, def interface{}) interface{} {
+	val := os.Getenv(name)
+	if val == "" {
+		return def
+	}
+
+	switch def.(type) {
+	case string:
+		if val == "" {
+			return def
+		}
+		return val
+	case []string:
+		if len(val) == 0 {
+			return def
+		}
+		for _, sep := range separators {
+			split := strings.Split(val, sep)
+			if split[0] != val {
+				return split
+			}
+		}
+		return []string{val}
+	case int:
+		n := int(parseInt64(val))
+		if n == 0 {
+			return def
+		}
+		return n
+	case int32:
+		n := parseInt64(val)
+		if n == 0 {
+			return def
+		}
+		return int32(n)
+
+	case int64:
+		n := parseInt64(val)
+		if n == 0 {
+			return def
+		}
+		return n
+	case float64:
+		res, _ := strconv.ParseFloat(val, 64)
+		if res == 0 {
+			return def
+		}
+
+		return res
+	case float32:
+		res, _ := strconv.ParseFloat(val, 32)
+		if res == 0 {
+			return def
+		}
+		return res
+	case bool:
+		res, err := strconv.ParseBool(val)
+		if err != nil {
+			return def
+		}
+
+		return res
+
+	case time.Time:
+		for _, layout := range timeLayouts {
+			t, err := time.Parse(layout, val)
+			if err == nil && !t.IsZero() {
+				return t
+			}
+		}
+		return def
+	case time.Duration:
+		d, err := time.ParseDuration(val)
+		if err != nil || d == 0 {
+			return def
+		}
+		return d
+
+	case *url.URL:
+		u, err := url.Parse(val)
+		if err != nil {
+			return def
+		}
+		return u
+	default:
+		return def
 	}
 }
