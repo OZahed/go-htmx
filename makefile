@@ -40,8 +40,8 @@ air: install-air
 test: 
 	go mod tidy && go test -v --race -p 1 ./internal/... 
 
-tls-keys: 
-	which openssl && openssl req -newkey rsa:2048 -nodes -keyout server.key -x509 -days 365 -out server.crt
+ssl-keys: 
+	which openssl && openssl req -newkey rsa:2048 -nodes -keyout server.key -x509 -days 7 -out server.crt || echo "\n\t openssl not found\n" 
 
 cleanup:
 	rm -rf ./bin
