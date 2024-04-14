@@ -15,3 +15,4 @@ WIP:
 - [ ] Add websocket
 - [ ] Add authentication handler
 - [ ] Add database
+- [ ] Add reusable classed in tailwind like btn and btn-primary
