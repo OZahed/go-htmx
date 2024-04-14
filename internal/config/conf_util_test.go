@@ -42,7 +42,7 @@ func TestGetEnv(t *testing.T) {
 	}
 
 	for k, v := range testEnvs {
-		os.Setenv(k, v)
+		_ = os.Setenv(k, v)
 	}
 
 	u, _ := url.Parse(urlString)

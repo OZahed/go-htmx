@@ -8,9 +8,6 @@ import (
 	"strconv"
 )
 
-// this is the most stupid form of count handling but go on with it for now
-var count int
-
 type Partials struct {
 	tmpl *template.Template
 	lg   *slog.Logger
@@ -54,5 +51,5 @@ func (p *Partials) handleErr(err error, w http.ResponseWriter, r *http.Request) 
 	p.lg.Error("error initiated", "path", r.URL.Path, "error", err.Error())
 
 	w.Header().Add(contentType, textPlain)
-	w.Write([]byte("bad request"))
+	_, _ = w.Write([]byte("bad request"))
 }

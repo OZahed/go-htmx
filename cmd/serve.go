@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"net/http"
@@ -70,9 +69,11 @@ func (s ServeCmd) Execute(args []string) {
 	}
 
 	server := http.Server{
-		Addr:      fmt.Sprintf(":%d", cfg.Port),
-		Handler:   middleware.Combine(mux, middlewares...),
-		TLSConfig: &tls.Config{},
+		Addr:              fmt.Sprintf(":%d", cfg.Port),
+		Handler:           middleware.Combine(mux, middlewares...),
+		ReadHeaderTimeout: time.Second * 5,
+		ReadTimeout:       time.Second * 15,
+		WriteTimeout:      time.Second * 15,
 	}
 
 	ctx, cnl := signal.NotifyContext(context.Background(),

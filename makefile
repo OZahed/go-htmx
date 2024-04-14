@@ -16,6 +16,9 @@ build: tidy
 tidy: 
 	go mod tidy && go mod download
 
+lint:
+	golangci-lint run -c .golangci.yml ./...
+
 tailwind:
 	[ ! -f ./tailwindcss ] && echo "\nplease take a look at tailwindcss installation process on officail docs: \n\n\t check standalone CLI process on:\n\t\033[0;33m https://tailwindcss.com/blog/standalone-cli \n\t or put the CLI in ./public directory \n\n\033[0;0m" || echo Tailwind exists
 
