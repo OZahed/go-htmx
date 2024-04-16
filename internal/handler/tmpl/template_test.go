@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/OZahed/go-htmx/internal/tmpl"
+	"github.com/OZahed/go-htmx/internal/handler/tmpl"
 )
 
 func TestAttach(t *testing.T) {

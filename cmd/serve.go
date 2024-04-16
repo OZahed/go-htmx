@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,8 +14,8 @@ import (
 	"github.com/OZahed/go-htmx/internal/config"
 	"github.com/OZahed/go-htmx/internal/handler"
 	"github.com/OZahed/go-htmx/internal/handler/middleware"
+	"github.com/OZahed/go-htmx/internal/handler/tmpl"
 	"github.com/OZahed/go-htmx/internal/logger"
-	"github.com/OZahed/go-htmx/internal/tmpl"
 )
 
 var (
@@ -42,7 +43,11 @@ func (s ServeCmd) Execute(args []string) {
 	ver := VersionCmd{}
 	ver.Execute(nil)
 
-	cfg := config.NewAppConfig(APP_NAME)
+	cfg, err := config.NewAppConfig(APP_NAME)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	layoutTemp := tmpl.LoadTemplates(cfg.LayoutsRootDir)
 	partialTemp := tmpl.LoadTemplates(cfg.PartialRootDirs)
 
