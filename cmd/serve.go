@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -42,7 +43,11 @@ func (s ServeCmd) Execute(args []string) {
 	ver := VersionCmd{}
 	ver.Execute(nil)
 
-	cfg := config.NewAppConfig(APP_NAME)
+	cfg, err := config.NewAppConfig(APP_NAME)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	layoutTemp := tmpl.LoadTemplates(cfg.LayoutsRootDir)
 	partialTemp := tmpl.LoadTemplates(cfg.PartialRootDirs)
 
