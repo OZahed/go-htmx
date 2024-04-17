@@ -12,7 +12,7 @@ package config
 import (
 	"time"
 
-	"github.com/OZahed/bob/configs"
+	"github.com/OZahed/bob/envs"
 )
 
 type AppConfig struct {
@@ -37,7 +37,7 @@ type AppConfig struct {
 func NewAppConfig(Prefix string) (*AppConfig, error) {
 	cfg := AppConfig{}
 
-	err := configs.EnvGetter(configs.DefaultKeyBuilder, configs.DefaultEnvGetter).ParseStruct(&cfg, Prefix)
+	err := envs.NewParser(envs.DefaultKeyFunc, envs.DefaultGetFunc).ParseStruct(&cfg, Prefix)
 	if err != nil {
 		return nil, err
 	}
