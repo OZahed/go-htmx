@@ -9,8 +9,8 @@ func Combine(mux http.Handler, middlewares ...Middleware) http.Handler {
 		return mux
 	}
 
-	for _, m := range middlewares {
-		mux = m(mux)
+	for i := len(middlewares) - 1; i >= 0; i-- {
+		mux = middlewares[i](mux)
 	}
 
 	return mux

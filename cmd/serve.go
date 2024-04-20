@@ -48,20 +48,20 @@ func (s ServeCmd) Execute(args []string) {
 		log.Fatal(err)
 	}
 
-	layoutTemp := tmpl.LoadTemplates(cfg.LayoutsRootDir)
-	partialTemp := tmpl.LoadTemplates(cfg.PartialRootDirs)
+	layoutTemp := tmpl.LoadTemplates(cfg.Layout.TempDir)
+	partialTemp := tmpl.LoadTemplates(cfg.Static.PartialsDir)
 
 	lg := logger.NewLogger()
 	// make handlers
-	layoutHandler := handler.NewLayout(layoutTemp, cfg.AppName, cfg.LayoutRootTmpName, lg)
+	layoutHandler := handler.NewLayout(layoutTemp, cfg.AppName, cfg.Layout.TempRootName, lg)
 	partialHandler := handler.NewPartials(partialTemp, lg.With("name", "partials"))
 	// add health check route
 	healthHandler := handler.NewHealthHandler()
 
 	mux := http.NewServeMux()
 
-	fs := http.FileServer(http.Dir(cfg.StaticFilesDir))
-	mux.Handle("GET /public/", http.StripPrefix(cfg.StaticRoutesPrefix, fs))
+	fs := http.FileServer(http.Dir(cfg.Static.FilesDir))
+	mux.Handle("GET /public/", http.StripPrefix(cfg.Static.RoutesPrefix, fs))
 
 	handler.SetHTMLRoutes(mux, layoutHandler)
 	handler.SetHandlerRoutes(mux, healthHandler)
@@ -71,10 +71,11 @@ func (s ServeCmd) Execute(args []string) {
 	middlewares := []middleware.Middleware{
 		middleware.PanicHandler,
 		middleware.LogIt,
+		middleware.GZip(5),
 	}
 
 	server := http.Server{
-		Addr:              fmt.Sprintf(":%d", cfg.Port),
+		Addr:              fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler:           middleware.Combine(mux, middlewares...),
 		ReadHeaderTimeout: time.Second * 5,
 		ReadTimeout:       time.Second * 15,
@@ -91,11 +92,11 @@ func (s ServeCmd) Execute(args []string) {
 
 	go func() {
 		var err error
-		if cfg.CertFile != "" {
-			lg.Debug(fmt.Sprintf("Server is ready -> https://localhost:%d/", cfg.Port))
-			err = server.ListenAndServeTLS(cfg.CertFile, cfg.KeyFile)
+		if cfg.Server.CertFile != "" {
+			lg.Debug(fmt.Sprintf("Server is ready -> https://localhost:%d/", cfg.Server.Port))
+			err = server.ListenAndServeTLS(cfg.Server.CertFile, cfg.Server.KeyFile)
 		} else {
-			lg.Debug(fmt.Sprintf("Server is ready -> http://localhost:%d/", cfg.Port))
+			lg.Debug(fmt.Sprintf("Server is ready -> http://localhost:%d/", cfg.Server.Port))
 			err = server.ListenAndServe()
 		}
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -107,7 +108,7 @@ func (s ServeCmd) Execute(args []string) {
 	<-ctx.Done()
 	lg.Warn("got signal for shutdown, server is shutting down ...")
 
-	shutCtx, shutCnl := context.WithDeadline(context.Background(), time.Now().Add(cfg.ShutdownDuration))
+	shutCtx, shutCnl := context.WithDeadline(context.Background(), time.Now().Add(cfg.Server.ShutdownDuration))
 	defer shutCnl()
 
 	if err := server.Shutdown(shutCtx); err != nil {
