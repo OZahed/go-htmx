@@ -61,9 +61,7 @@ func (s ServeCmd) Execute(args []string) {
 	mux := http.NewServeMux()
 
 	fs := http.FileServer(http.Dir(cfg.Static.FilesDir))
-	mux.Handle("GET /public/", middleware.GZip(1)(
-		http.StripPrefix(cfg.Static.RoutesPrefix, fs),
-	))
+	mux.Handle("GET /public/", http.StripPrefix(cfg.Static.RoutesPrefix, fs))
 
 	handler.SetHTMLRoutes(mux, layoutHandler)
 	handler.SetHandlerRoutes(mux, healthHandler)
@@ -85,7 +83,7 @@ func (s ServeCmd) Execute(args []string) {
 	middlewares := []middleware.Middleware{
 		middleware.PanicHandler,
 		middleware.LogIt,
-		middleware.GZip(3),
+		middleware.GZip(5),
 	}
 
 	server := http.Server{
