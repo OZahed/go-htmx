@@ -1,21 +1,33 @@
-FROM scratch as Build
+FROM golang:1.22-bookworm as build
 
-# Add make
+# Add make, ca-certificate, git, tailwindcss
+RUN apt-get -y update && apt-get install -y  \ 
+  git \
+  make \
+  ca-certificates \
+  openssl && rm -rf /var/cache/apt/archives /var/lib/apt/lists/* 
 
-# Add ca-ceretificate
+WORKDIR /app
+COPY . . 
 
-# add git
-
-# Build using makefile with pushing Git version, build hash and AppName
-
-# Add Helm Chanrt
+RUN make ssl-keys
+RUN make build-linux
 
 FROM alpine:latest AS runtime
 
 # add ca-certificate
+USER root
+RUN apk --no-cache add ca-certificates \
+  && update-ca-certificates
 
-# copy public files
+WORKDIR /go-htmx
+COPY --from=build /app/bin . 
+COPY --from=build /app/templates .
 
-# push environment variables
+EXPOSE 8080
 
-# Run Server
+ENV TEMP_DIR="/go-htmx/templates"
+ENV TEMP_ROOT_NAME="Layout"
+ENV NAME="go-htmx"
+
+CMD [ "/go-htmx/go-htmx", "serve" ]

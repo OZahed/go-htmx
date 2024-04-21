@@ -69,10 +69,23 @@ func (s ServeCmd) Execute(args []string) {
 	handler.SetHandlerRoutes(mux, healthHandler)
 	handler.SetPartialRoute(mux, partialHandler)
 
+	// Creating a sub route
+	apiMux := http.NewServeMux()
+	apiMux.HandleFunc("GET /todos/{id}", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("hello from apis requested for id: " + r.PathValue("id")))
+	})
+	apiMux.HandleFunc("POST /todos/{id}/done", func(w http.ResponseWriter, r *http.Request) {})
+	apiMux.HandleFunc("POST /todos", func(w http.ResponseWriter, r *http.Request) {})
+
+	apiMuxMiddlewares := []middleware.Middleware{}
+	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", middleware.Combine(apiMux, apiMuxMiddlewares...)))
+
 	// middlewares apply in reverse order
 	middlewares := []middleware.Middleware{
 		middleware.PanicHandler,
 		middleware.LogIt,
+		middleware.GZip(3),
 	}
 
 	server := http.Server{

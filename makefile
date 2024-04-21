@@ -1,7 +1,9 @@
-APP_NAME = htmx-todo
+APP_NAME = go-htmx
 APP_VERSION := $(shell git describe --abbrev=0 || echo v0.1.0)
 GIT_HEAD := $(shell git rev-parse --verify HEAD)
 BUILD_AT := $(shell date --rfc-3339 'seconds' -u)
+GOOS := linux 
+GOARCH := amd64
 
 build-run: build
 	./bin/$(APP_NAME)
@@ -10,7 +12,11 @@ run: build
 	./bin/$(APP_NAME) serve
 
 build: tidy
-	go build -ldflags="-w -s -X 'github.com/OZahed/go-htmx/cmd.APP_VERSION=$(APP_VERSION)' -X 'github.com/OZahed/go-htmx/cmd.APP_NAME=$(APP_NAME)' -X 'github.com/OZahed/go-htmx/cmd.GIT_HEAD=$(GIT_HEAD)' -X 'github.com/OZahed/go-htmx/cmd.BUILD_AT=$(BUILD_AT)'" \
+	 go build -ldflags="-w -s -X 'github.com/OZahed/go-htmx/cmd.APP_VERSION=$(APP_VERSION)' -X 'github.com/OZahed/go-htmx/cmd.APP_NAME=$(APP_NAME)' -X 'github.com/OZahed/go-htmx/cmd.GIT_HEAD=$(GIT_HEAD)' -X 'github.com/OZahed/go-htmx/cmd.BUILD_AT=$(BUILD_AT)'" \
+		-o bin/$(APP_NAME) . && cp -r public/ bin/ 
+
+build-linux: tidy
+	GOGC=off CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags="-w -s -X 'github.com/OZahed/go-htmx/cmd.APP_VERSION=$(APP_VERSION)' -X 'github.com/OZahed/go-htmx/cmd.APP_NAME=$(APP_NAME)' -X 'github.com/OZahed/go-htmx/cmd.GIT_HEAD=$(GIT_HEAD)' -X 'github.com/OZahed/go-htmx/cmd.BUILD_AT=$(BUILD_AT)'" \
 		-o bin/$(APP_NAME) . && cp -r public/ bin/ 
 
 tidy: 
@@ -28,8 +34,8 @@ tailwind-watch:
 tailwind-minify:
 	./tailwindcss -i ./public/css/base.css -o ./public/css/styles.css --minify
 
-build-docker: which-docker
-	docker build .
+docker-build: which-docker
+	docker build -t go-htmx:latest  .
 
 which-docker:
 	which docker
