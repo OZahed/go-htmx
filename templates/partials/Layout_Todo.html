@@ -1,0 +1,51 @@
+{{define "Layout_Todo"}}
+<div class="flex flex-col items-center my-4 gap-4 w-full fade-me-out">
+    <div id="list-placeholder"
+        class="gtid grid-cols-3 grid-rows-1 gap-4 shadow-md max-w-4xl mb-8 w-full rounded-lg bg-white p-4 mx-4 hover:shadow-md">
+
+        <!-- Card Header -->
+        <div class="text-4xl justify-center items-center flex flex-col content-between">
+            <h1 class="text-sky-700 text-4xl"> Todo List </h1>
+            <hr class="w-1/2 mx-auto">
+        </div>
+
+        <!-- List Part -->
+        <div class="py-4 px-6 w-full">
+            <ul class="text-black flex flex-col justify-between ">
+                {{ range .Todos }}
+                <li class="justify-center items-start w-full">
+                    <div class="text-4xl justify-around items-center flex flex-row">
+                        <input type="checkbox" hx-target="list-placeholder" hx-trigger="input" hx-swap="innerHTML"
+                            name="scales" class="text-gray-700" checked />
+                        <input id="todo-{{.Id}}" for="checkbox w-4/5" value="{{.Title}}"
+                            class="h-12 text-2xl bg-inherit rounded-lg"></input>
+                        <hr class="h-1/2 my-auto">
+                        <div class="flex flex-row justify-around mx=4">
+                            <button type="button" hx-trigger="click" hx-delete="/todos/{{.Id}}"
+                                class="text-red-600 font-bold px-4 py-2 border-red-600 rounded-lg hover:bg-red-700 hover:text-white">Delete
+                            </button>
+                            <button type="button" hx-put="/todos/{{.Id}}"
+                                class="text-black font-bold px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Delete
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                {{end}}
+            </ul>
+        </div>
+        <hr class="w-1/2 mx-auto">
+
+        <form hx-post="/todos" class="w-full justify-around content-center flex flex-row">
+            <input for="checkbox w-4/5" type="text" class="text-xl" placeholder="Todo Tile..." name="title" />
+            <div class="flex flex-row justify-around mx=4">
+                <button type="submit"
+                    class="text-black font-bold px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Add Todo
+                </button>
+        </form>
+        <!-- Create New Form -->
+    </div>
+</div>
+{{- range $val := .Todos -}}
+{{template "Comp_Todo" $val }}
+{{end}}
+{{end}}
