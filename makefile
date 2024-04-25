@@ -11,13 +11,23 @@ build-run: build
 run: build
 	./bin/$(APP_NAME) serve
 
-build: tidy
+build: tidy templ go-dependencies
 	 go build -ldflags="-w -s -X 'github.com/OZahed/go-htmx/cmd.APP_VERSION=$(APP_VERSION)' -X 'github.com/OZahed/go-htmx/cmd.APP_NAME=$(APP_NAME)' -X 'github.com/OZahed/go-htmx/cmd.GIT_HEAD=$(GIT_HEAD)' -X 'github.com/OZahed/go-htmx/cmd.BUILD_AT=$(BUILD_AT)'" \
 		-o bin/$(APP_NAME) . && cp -r public/ bin/ 
 
-build-linux: tidy
+build-linux: tidy go-dependencies
 	GOGC=off CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags="-w -s -X 'github.com/OZahed/go-htmx/cmd.APP_VERSION=$(APP_VERSION)' -X 'github.com/OZahed/go-htmx/cmd.APP_NAME=$(APP_NAME)' -X 'github.com/OZahed/go-htmx/cmd.GIT_HEAD=$(GIT_HEAD)' -X 'github.com/OZahed/go-htmx/cmd.BUILD_AT=$(BUILD_AT)'" \
 		-o bin/$(APP_NAME) . && cp -r public/ bin/ 
+
+templ-watch: which-templ
+	templ generate -path=./internal/templ-files -watch=true
+
+templ: which-templ
+	templ generate -path=./internal/templ-files
+
+
+which-templ: 
+	which templ || ( echo -e "\033[0;34minstalling templ\n\n\033[0;0m" && go install github.com/a-h/templ/cmd/templ@latest)
 
 tidy: 
 	go mod tidy && go mod download
@@ -54,3 +64,7 @@ ssl-keys:
 
 cleanup:
 	rm -rf ./bin
+
+# Add indirect go dependncy
+go-dependencies:
+	go get github.com/a-h/templ

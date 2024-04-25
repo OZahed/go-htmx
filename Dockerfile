@@ -1,5 +1,6 @@
 FROM golang:1.22-bookworm as build
 
+
 # Add make, ca-certificate, git, tailwindcss
 RUN apt-get -y update && apt-get install -y  \ 
   git \
@@ -10,6 +11,7 @@ RUN apt-get -y update && apt-get install -y  \
 WORKDIR /app
 COPY . . 
 
+RUN go get github.com/a-h/templ
 RUN make ssl-keys
 RUN make build-linux
 

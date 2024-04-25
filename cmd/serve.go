@@ -55,6 +55,7 @@ func (s ServeCmd) Execute(args []string) {
 	// make handlers
 	layoutHandler := handler.NewLayout(layoutTemp, cfg.AppName, cfg.Layout.TempRootName, lg)
 	partialHandler := handler.NewPartials(partialTemp, lg.With("name", "partials"))
+	templHandler := handler.NewTempleHandler(lg.With("name", "templ"))
 	// add health check route
 	healthHandler := handler.NewHealthHandler()
 
@@ -66,6 +67,7 @@ func (s ServeCmd) Execute(args []string) {
 	handler.SetHTMLRoutes(mux, layoutHandler)
 	handler.SetHandlerRoutes(mux, healthHandler)
 	handler.SetPartialRoute(mux, partialHandler)
+	handler.SetTemplRoutes(mux, templHandler)
 
 	// Creating a sub route
 	apiMux := http.NewServeMux()

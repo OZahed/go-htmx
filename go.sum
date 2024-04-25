@@ -1,2 +1,6 @@
 github.com/OZahed/bob/envs v0.0.0-20240417073238-b8cb49a32f40 h1:X1IPzSp0PJX4mAn+2/JRkP1ofgM9kpgcclAtyCZWDE0=
 github.com/OZahed/bob/envs v0.0.0-20240417073238-b8cb49a32f40/go.mod h1:0ixuQVZ+Ntvac+TKmsAVx20TIQDjFIVi7Qm3rKhL1Ek=
+github.com/a-h/templ v0.2.663 h1:aa0WMm27InkYHGjimcM7us6hJ6BLhg98ZbfaiDPyjHE=
+github.com/a-h/templ v0.2.663/go.mod h1:SA7mtYwVEajbIXFRh3vKdYm/4FYyLQAtPH1+KxzGPA8=
+github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
+github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
