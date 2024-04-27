@@ -59,6 +59,24 @@ func (lh *Layout) TagsHandler(w http.ResponseWriter, r *http.Request) {
 	lh.renderTemplate(data, w, r)
 }
 
+func (lh *Layout) Greet(w http.ResponseWriter, r *http.Request) {
+	QZZ
+	name := r.PathValue("name")
+	age := r.PathValue("age")
+
+	data := LayoutInfo{
+		SubTmplName: "Greetings",
+		PageName:    fmt.Sprintf("%s > Greetings", lh.siteName),
+		Route:       r.URL.Path,
+		Meta: map[string]interface{}{
+			"Name": name,
+			"Age":  age,
+		},
+	}
+
+	lh.renderTemplate(data, w, r)
+}
+
 func (lh *Layout) renderTemplate(data LayoutInfo, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(contentType, textHtml)
 	err := lh.tmpl.ExecuteTemplate(w, lh.root, data)

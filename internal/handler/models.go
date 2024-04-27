@@ -12,6 +12,7 @@ const (
 type ExtraFunc template.FuncMap
 
 type LayoutInfo struct {
+	Meta        map[string]interface{}
 	SubTmplName string
 	PageName    string
 	Route       string
